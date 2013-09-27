@@ -1,6 +1,5 @@
 StatsExpose::Application.routes.draw do
-  get "dashboards/index"
-  get "dashboards/show"
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -15,9 +14,14 @@ StatsExpose::Application.routes.draw do
 
   # Example resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
-
+  resources :dashboards do
+    member do
+      post "updateorder"
+    end
+    resource :widgets
+  end
   # Example resource route with options:
-  #   resources :products do
+  #
   #     member do
   #       get 'short'
   #       post 'toggle'

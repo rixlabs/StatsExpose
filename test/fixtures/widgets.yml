@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  dashboard_id: 
+  item_id: 1
+  list: MyString
+  index: 1
+  content: MyText
+
+two:
+  dashboard_id: 
+  item_id: 1
+  list: MyString
+  index: 1
+  content: MyText
