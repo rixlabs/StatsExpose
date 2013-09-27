@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130926133006) do
+ActiveRecord::Schema.define(version: 20130927120811) do
 
   create_table "dashboards", force: true do |t|
     t.string   "layout"
@@ -27,6 +27,11 @@ ActiveRecord::Schema.define(version: 20130926133006) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "size"
+    t.string   "endpoint"
+    t.string   "chart_type"
+    t.string   "title"
+    t.string   "indicator"
+    t.text     "description"
   end
 
   add_index "widgets", ["dashboard_id"], name: "index_widgets_on_dashboard_id"
