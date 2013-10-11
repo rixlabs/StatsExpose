@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>StatsExpose</title>
+    <link data-turbolinks-track="true" href="/assets/application.css?body=1" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/bootstrap.css?body=1" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/dashboards.css?body=1" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/docs.css?body=1" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/widget.css?body=1" media="all" rel="stylesheet" />
+    <link href="http://js.arcgis.com/3.6/js/esri/css/esri.css" media="screen" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.1.5/angular.min.js"></script>
+    <script src="http://code.angularjs.org/1.1.5/angular-resource.min.js"></script>
+    <script src="http://js.arcgis.com/3.6/"></script>
+    <script data-turbolinks-track="true" src="/assets/jquery.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/jquery_ujs.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/turbolinks.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/app.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/bootstrap.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/charts.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/dashboards.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/jquery-ui.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/map.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/widget.js?body=1"></script>
+    <script data-turbolinks-track="true" src="/assets/application.js?body=1"></script>
+
+    <meta content="authenticity_token" name="csrf-param" />
+    <meta content="BOMEWU5mwkaZzZ/7ockiQHrq7CstfHV/Cgp/43LZUtI=" name="csrf-token" />
+
+
+
+
+</head>
+<body>
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/dashboards">Stats Dashboard</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Link</a></li>
+            <li><a href="#">Link</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li><a href="#">Separated link</a></li>
+                    <li><a href="#">One more separated link</a></li>
+                </ul>
+            </li>
+        </ul>
+
+    </div><!-- /.navbar-collapse -->
+</nav>
+
+<div class="container">
+<div id="wrapper" class="row" data-url="/dashboards/13">
+
+    <h1>Test Pure</h1>
+    <div id="action-bar">
+        <div class="col-md-6">
+            <a data-toggle="modal" href="#myModal">
+                <button type="button" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-plus"></span> Add widget
+                </button>
+            </a>
+        </div>
+        <div class="col-md-6" style="text-align: right;">
+            <button type="button" id="sort_toggle" class="btn btn-warning">
+                <span id="pin_sortable" class="glyphicon glyphicon-pushpin" style="display: none;"></span> Block widgets
+            </button>
+        </div>
+    </div>
+    <br />
+    <hr />
+    <ul id="sortable1" class="widget-list"  ng-controller="WidgetController">
+        <li ng-repeat="widget in widgets" id="{{widget.id}}" class="{{widget.size}}">
+            <div class="frame" ng-switch on="widget.chart_type">
+                <div class="chart" ng-switch-when="map">
+                    <map>
+                        <dynamic-layer url="http://srvgists006.lugano.ch:6080/arcgis/rest/services/Basemap/BaseMapDyn/MapServer"></dynamic-layer>
+                        <feature-layer url="http://srvgists006.lugano.ch:6080/arcgis/rest/services/Basemap/Quartieri/FeatureServer/0"></feature-layer>
+                    </map>
+                </div>
+                <div class="chart" ng-switch-default>
+                    <div google-chart chart="widget.chartData" style="height:400px; width:100%;" />
+                </div>
+            </div>
+        </li>
+    </ul>
+</div>
+
+    <script>
+
+        app.controller('WidgetController' ,function ($scope, $http,$route){
+            console.log( $route);
+            grafici = [];
+            $http.get("http://localhost:3000/dashboards/13.json").success(function(data) {
+
+                angular.forEach(data.widgets,
+                        function(value,key){
+                            $http.get(value.endpoint).success(function(data) {
+                                item =
+                                {
+                                    "type": value.chart_type,
+                                    "data":data,
+                                    "displayed": true,
+                                    "cssStyle": "height:400px; width:100%;",
+                                    "options": {
+                                        "title": value.title,
+                                        "isStacked": "true",
+                                        "fill": 20,
+                                        "displayExactValues": true,
+                                        "vAxis": {
+                                            "title": "Popolazione",
+                                            "gridlines": {
+                                                "count": 10
+                                            }
+                                        },
+                                        "hAxis": {
+                                            "title": "Anno"
+                                        }
+                                    },
+                                    "formatters": {}
+                                }
+
+                                grafici.push(item);
+                                value.chartData = item;
+                            });
+                        });
+
+                $scope.widgets = data.widgets;
+                console.log($scope.widgets);
+
+            });
+
+        });
+
+    </script>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Modal title</h4>
+            </div>
+            <div class="modal-body">
+                <form accept-charset="UTF-8" action="/dashboards/13/widgets" class="new_widget" id="new_widget" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /><input name="authenticity_token" type="hidden" value="BOMEWU5mwkaZzZ/7ockiQHrq7CstfHV/Cgp/43LZUtI=" /></div>
+
+                    <div class="field">
+                        <label for="widget_Indicatore">Indicatore</label><br>
+                        <select id="widget_endpoint" name="widget[endpoint]"><option value="http://pws0000461.lugano.ch:3131/demographics?indicator[method]=total_by_year_quartiere&amp;indicator[quartiere_id]=1&amp;indicator[from]=1999&amp;indicator[to]=2012">Popolazione per quartiere su X anni</option>
+                            <option value="http://pws0000461.lugano.ch:3131/demographics?indicator[method]=totale_quartieri_anno&amp;indicator[year]=2012">Totale annuo</option>
+                            <option value="http://pws0000461.lugano.ch:3131/demographics?indicator[method]=totale_abitanti">Totale attuale</option></select>
+                    </div>
+                    <div class="field">
+                        <label for="widget_Tipo di grafico">Tipo di grafico</label><br>
+                        <select id="widget_chart_type" name="widget[chart_type]"><option value="map">Mappa</option>
+                            <option value="AreaChart">Area chart</option>
+                            <option value="PieChart">Pie Chart</option>
+                            <option value="ColumnChart">Column chart</option>
+                            <option value="LineChart">Line chart</option>
+                            <option value="Table">Table</option>
+                            <option value="BarChart">Bar chart</option></select>
+                    </div>
+                    <div class="field">
+                        <label for="widget_size">Size</label><br>
+                        <select id="widget_size" name="widget[size]"><option value="col-md-6">50%</option>
+                            <option value="col-md-12">100%</option></select>
+                    </div>
+                    <div class="field">
+                        <label for="widget_Titolo del widget">Titolo del widget</label><br>
+                        <input id="widget_title" name="widget[title]" type="text" />
+                    </div>
+                    <div class="field">
+                        <label for="widget_Titolo del widget">Titolo del widget</label><br>
+                        <textarea id="widget_description" name="widget[description]">
+                        </textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <input class="btn btn-primary" name="commit" type="submit" value="Create Widget" />
+
+                    </div>
+                </form>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+    <footer>
+        <p>&copy; Company 2013</p>
+    </footer>
+
+</div><!--/.fluid-container-->
+
+<script>
+    dojo.require("esri.map");
+    dojo.require("esri.layers.FeatureLayer");
+    dojo.addOnLoad(function() {
+        angular.bootstrap(document, ['mapApp']);
+    });
+</script>
+</body>
+</html>

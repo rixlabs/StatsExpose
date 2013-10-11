@@ -1,1 +1,42 @@
-<li id="item-<%= id %>" class="<%= size %>"><div class="frame"><%= content %></div></li>
+
+<script>
+    function GreetingCtrl<%= id %>($scope, $http) {
+
+        $scope.chart = {
+            "type": "<%= chart_type %>",
+            "displayed": true,
+            "cssStyle": "height:400px; width:100%;",
+            "options": {
+                "title": "<%= title %>",
+                "isStacked": "true",
+                "fill": 20,
+                "displayExactValues": true,
+                "vAxis": {
+                    "title": "Popolazione",
+                    "gridlines": {
+                        "count": 10
+                    }
+                },
+                "hAxis": {
+                    "title": "Anno"
+                }
+            },
+            "formatters": {}
+        }
+
+        $http.get("<%= endpoint %>").success(function(data) {
+            $scope.chart.data = data;
+        });
+
+    }
+</script>
+
+
+  <li ng-controller="GreetingCtrl<%= id %>" id="item-<%= id %>" class="<%= size %>">
+    <div class="frame">
+      <div class="chart">
+        <div google-chart chart="chart" type="AreaChart" titlex="Popolazione" titley="Anno" style="{{chart.cssStyle}}" />
+      </div>
+    </div>
+  </li>
+

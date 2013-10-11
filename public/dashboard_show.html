@@ -1,0 +1,80 @@
+
+
+
+<div id="wrapper" class="row" data-url="/dashboards/13">
+
+    <h1>Test Pure</h1>
+
+    <br />
+    <hr />
+    <ul id="sortable1" class="widget-list"  ng-controller="WidgetController">
+
+
+
+
+        <li ng-repeat="widget in widgets" id="{{widget.id}}" class="{{widget.size}}">
+            <div class="frame" ng-switch on="widget.chart_type">
+                <div class="chart" ng-switch-when="map">
+                    <map>
+                        <dynamic-layer url="http://srvgists006.lugano.ch:6080/arcgis/rest/services/Basemap/BaseMapDyn/MapServer"></dynamic-layer>
+                        <feature-layer url="http://srvgists006.lugano.ch:6080/arcgis/rest/services/Basemap/Quartieri/FeatureServer/0"></feature-layer>
+                    </map>
+                </div>
+                <div class="chart" ng-switch-default>
+                    <div google-chart chart="widget.chartData" style="height:400px; width:100%;" />
+                </div>
+            </div>
+        </li>
+
+    </ul>
+</div>
+
+    <script>
+
+        app.controller('WidgetController' ,function ($scope, $http,$route){
+            console.log( $route);
+            grafici = [];
+            $http.get("http://localhost:3000/dashboards/13.json").success(function(data) {
+
+                angular.forEach(data.widgets,
+                        function(value,key){
+                            $http.get(value.endpoint).success(function(data) {
+                                item =
+                                {
+                                    "type": value.chart_type,
+                                    "data":data,
+                                    "displayed": true,
+                                    "cssStyle": "height:400px; width:100%;",
+                                    "options": {
+                                        "title": value.title,
+                                        "isStacked": "true",
+                                        "fill": 20,
+                                        "displayExactValues": true,
+                                        "vAxis": {
+                                            "title": "Popolazione",
+                                            "gridlines": {
+                                                "count": 10
+                                            }
+                                        },
+                                        "hAxis": {
+                                            "title": "Anno"
+                                        }
+                                    },
+                                    "formatters": {}
+                                }
+
+                                grafici.push(item);
+                                value.chartData = item;
+                            });
+                        });
+
+                $scope.widgets = data.widgets;
+                console.log($scope.widgets);
+
+            });
+
+        });
+
+    </script>
+
+

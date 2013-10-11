@@ -1,33 +1,39 @@
-<%= form_for(@widget) do |f| %>
-  <% if @widget.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@widget.errors.count, "error") %> prohibited this widget from being saved:</h2>
+<%= form_for([@dashboard, @widget]) do |f| %>
+    <% if @widget.errors.any? %>
+        <div id="error_explanation">
+          <h2><%= pluralize(@widget.errors.count, "error") %> prohibited this widget from being saved:</h2>
 
-      <ul>
-      <% @widget.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+          <ul>
+            <% @widget.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+    <% end %>
+
+    <div class="field">
+      <%= f.label "Indicatore" %><br>
+      <%= select :widget,:endpoint, options_for_select(Widget::ENDPOINTS.map {|k,v| [ k, v ] }) %>
     </div>
-  <% end %>
+    <div class="field">
+      <%= f.label "Tipo di grafico" %><br>
+      <%= select :widget,:chart_type, options_for_select(Widget::CHART_TYPE.map {|k,v| [ v, k ] }) %>
+    </div>
+    <div class="field">
+      <%= f.label :size %><br>
+      <%= select :widget,:size, options_for_select(Widget::SIZES.map {|k,v| [ v, k ] }) %>
+    </div>
+    <div class="field">
+      <%= f.label "Titolo del widget" %><br>
+      <%= f.text_field :title %>
+    </div>
+    <div class="field">
+      <%= f.label "Titolo del widget" %><br>
+      <%= f.text_area :description %>
+    </div>
 
-  <div class="field">
-    <%= f.label :dashboard %><br>
-    <%= f.text_field :dashboard %>
-  </div>
-  <div class="field">
-    <%= f.label :sequence %><br>
-    <%= f.number_field :sequence %>
-  </div>
-  <div class="field">
-    <%= f.label :content %><br>
-    <%= f.text_area :content %>
-  </div>
-  <div class="field">
-    <%= f.label :size %><br>
-    <%= f.text_field :size %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+    <div class="modal-footer">
+      <%= f.submit :class => "btn btn-primary" %>
+
+    </div>
 <% end %>

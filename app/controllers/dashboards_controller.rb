@@ -1,12 +1,31 @@
 class DashboardsController < ApplicationController
   def index
     @dashboards = Dashboard.all
+
+    #render :json => @dashboards
+
+    respond_to do |format|
+      format.html
+      format.json { render json: @dashboards }
+    end
+
   end
 
   def show
     @dashboard = Dashboard.find((params[:id]))
     @widgets1 = @dashboard.widgets.order("sequence")
     @widget = Widget.new
+
+    json_dash = Hash.new
+
+    json_dash[:id] = @dashboard.id
+    json_dash[:widgets] = @widgets1
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.json { render json: json_dash }
+    end
+
   end
 
 

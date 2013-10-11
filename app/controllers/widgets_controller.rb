@@ -74,6 +74,6 @@ class WidgetsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def widget_params
-      params.require(:widget).permit(:dashboard_id, :sequence, :content, :size)
+      params.require(:widget).permit(:dashboard_id, :sequence, :content, :size, :endpoint, :chart_type, :title, :indicator, :description)
     end
 end

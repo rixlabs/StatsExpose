@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html ng-app="dashboardApp">
+<head>
+    <title>StatsExpose</title>
+    <link data-turbolinks-track="true" href="/assets/application.css" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/bootstrap.css" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/dashboards.css" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/docs.css" media="all" rel="stylesheet" />
+    <link data-turbolinks-track="true" href="/assets/widget.css" media="all" rel="stylesheet" />
+    <link href="http://js.arcgis.com/3.6/js/esri/css/esri.css" media="screen" rel="stylesheet" />
+    <script src="http://code.angularjs.org/1.1.5/angular.js"></script>
+    <script src="http://code.angularjs.org/1.1.5/angular-resource.min.js"></script>
+
+    <script src="http://js.arcgis.com/3.6/"></script>
+    <script data-turbolinks-track="true" src="/assets/jquery.js"></script>
+    <script data-turbolinks-track="true" src="/assets/jquery_ujs.js"></script>
+    <script data-turbolinks-track="true" src="/assets/turbolinks.js"></script>
+    <script data-turbolinks-track="true" src="/assets/bootstrap.js"></script>
+    <script data-turbolinks-track="true" src="/assets/jquery-ui.js"></script>
+    <meta content="authenticity_token" name="csrf-param" />
+    <meta content="BOMEWU5mwkaZzZ/7ockiQHrq7CstfHV/Cgp/43LZUtI=" name="csrf-token" />
+
+
+
+
+</head>
+<script>
+    console.log("init");
+    var dashboardApp = angular.module('dashboardApp',['ngResource']);
+
+    dashboardApp.controller('DashboardIndex',function($resource,$http,$scope){
+        var resDashboard = $resource('/dashboards.json');
+        console.log("Query Dashboards");
+        var dashboards = resDashboard.query(function(){
+            $scope.dashboards = dashboards;
+        });
+    });
+
+
+</script>
+<body >
+<nav class="navbar navbar-default navbar-static-top" role="navigation">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="/dashboards">Stats Dashboard</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="http://localhost:3000/dash">Dash Show Test</a></li>
+            <li><a href="#">Link</a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Action</a></li>
+                    <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li><a href="#">Separated link</a></li>
+                    <li><a href="#">One more separated link</a></li>
+                </ul>
+            </li>
+        </ul>
+
+    </div><!-- /.navbar-collapse -->
+</nav>
+
+
+
+<div class="container">
+    <div id="wrapper" class="row" data-url="/dashboards/13">
+
+        <table class="table table-hover" ng-controller="DashboardIndex">
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr ng-repeat="dashboard in dashboards">
+                <td>{{dashboard.title}}</td>
+                <td><span class="glyphicon glyphicon-eye-open"></span><a href="/dashboards/12">Show</a></td>
+                <td><span class="glyphicon glyphicon-pencil"></span><a href="/dashboards/12/edit">Edit</a></td>
+                <td><span class="glyphicon glyphicon-trash"></span><a data-confirm="Are you sure?" data-method="delete" href="/dashboards/12" rel="nofollow">Destroy</a></td>
+            </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<div ng-view></div>
+
+
+</body>
+</html>
